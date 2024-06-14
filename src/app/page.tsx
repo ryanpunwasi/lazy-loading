@@ -1,6 +1,7 @@
 import { Alert, Stack } from "@mui/material";
 import CommentList from "./components/CommentList";
 import { PAGE_SIZE } from "./config";
+import IconContainer from "./components/IconContainer";
 
 export default async function Home() {
   const request = await fetch(
@@ -15,6 +16,7 @@ export default async function Home() {
         display: "flex",
         height: "100%",
         width: "100%",
+        position: "relative",
       }}
     >
       <Stack
@@ -24,6 +26,7 @@ export default async function Home() {
         sx={{ minHeight: "100%" }}
         padding={"1em"}
       >
+        <IconContainer />
         <Alert style={{ marginBottom: "2em" }} severity="info">
           Scroll to load more comments!
         </Alert>
