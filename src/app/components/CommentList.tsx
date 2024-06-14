@@ -56,17 +56,22 @@ const CommentList = ({ initialComments }: Props) => {
       await new Promise(r => setTimeout(r, 500));
 
       try {
-        const fetchedComments = await fetchComments(
+        const fetchedComments: Comment[] = await fetchComments(
           start + PAGE_SIZE,
           PAGE_SIZE
         );
-        setStart(prev => prev + PAGE_SIZE);
-        setComments([...comments, ...fetchedComments]);
-        setLoading(false);
+
+        if (fetchedComments.length > 0) {
+          setStart(prev => prev + PAGE_SIZE);
+          setComments([...comments, ...fetchedComments]);
+        } else {
+          setAllowFetch(false);
+        }
       } catch (e) {
         setAllowFetch(false);
-        setLoading(false);
       }
+
+      setLoading(false);
     }
   };
 
@@ -90,7 +95,7 @@ const CommentList = ({ initialComments }: Props) => {
 
   const fetchComments = async (start: number, limit: number) => {
     const req = await fetch(
-      `https://jsonplaceholder.typicode.com/commens?_start=${start}&_limit=${limit}`
+      `https://jsonplaceholder.typicode.com/comments?_start=${start}&_limit=${limit}`
     );
 
     return await req.json();
