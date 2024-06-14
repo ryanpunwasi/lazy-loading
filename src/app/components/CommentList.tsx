@@ -28,6 +28,7 @@ type Comment = {
 const CommentList = ({ initialComments }: Props) => {
   const [comments, setComments] = useState(initialComments);
   const [loading, setLoading] = useState(false);
+  const [allowFetch, setAllowFetch] = useState(true);
   const [start, setStart] = useState(0);
   const renderedComments = comments.map(comment => (
     <CommentListItem comment={comment} key={comment.id}></CommentListItem>
@@ -41,6 +42,8 @@ const CommentList = ({ initialComments }: Props) => {
   }, [loading]);
 
   const onScroll = async () => {
+    if (!allowFetch) return;
+
     const params = {
       scrollHeight: ref?.current?.scrollHeight || 0,
       scrollTop: ref?.current?.scrollTop || 0,
@@ -52,11 +55,18 @@ const CommentList = ({ initialComments }: Props) => {
       setLoading(true);
       await new Promise(r => setTimeout(r, 500));
 
-      const fetchedComments = await fetchComments(start + PAGE_SIZE, PAGE_SIZE);
-
-      setStart(prev => prev + 15);
-      setComments([...comments, ...fetchedComments]);
-      setLoading(false);
+      try {
+        const fetchedComments = await fetchComments(
+          start + PAGE_SIZE,
+          PAGE_SIZE
+        );
+        setStart(prev => prev + PAGE_SIZE);
+        setComments([...comments, ...fetchedComments]);
+        setLoading(false);
+      } catch (e) {
+        setAllowFetch(false);
+        setLoading(false);
+      }
     }
   };
 
@@ -80,7 +90,7 @@ const CommentList = ({ initialComments }: Props) => {
 
   const fetchComments = async (start: number, limit: number) => {
     const req = await fetch(
-      `https://jsonplaceholder.typicode.com/comments?_start=${start}&_limit=${limit}`
+      `https://jsonplaceholder.typicode.com/commens?_start=${start}&_limit=${limit}`
     );
 
     return await req.json();
