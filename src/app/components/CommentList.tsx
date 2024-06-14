@@ -11,7 +11,7 @@ import {
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
 import { styled } from "@mui/material/styles";
-import { PAGE_SIZE } from "../config";
+import { PAGE_SIZE, PIXEL_THRESHOLD } from "../config";
 
 type Props = {
   initialComments: Comment[];
@@ -41,19 +41,41 @@ const CommentList = ({ initialComments }: Props) => {
   }, [loading]);
 
   const onScroll = async () => {
-    const bottom =
-      (ref?.current?.scrollHeight || 0) -
-      (ref?.current?.scrollTop || 0) -
-      (ref.current?.clientHeight || 0);
-    if (!loading && bottom < 1 && bottom >= -1) {
+    const params = {
+      scrollHeight: ref?.current?.scrollHeight || 0,
+      scrollTop: ref?.current?.scrollTop || 0,
+      clientHeight: ref?.current?.clientHeight || 0,
+      pixelThreshold: PIXEL_THRESHOLD,
+    };
+
+    if (!loading && isAtBottom(params)) {
       setLoading(true);
       await new Promise(r => setTimeout(r, 500));
 
       const fetchedComments = await fetchComments(start + PAGE_SIZE, PAGE_SIZE);
+
       setStart(prev => prev + 15);
       setComments([...comments, ...fetchedComments]);
       setLoading(false);
     }
+  };
+
+  const isAtBottom = ({
+    scrollHeight,
+    scrollTop,
+    clientHeight,
+    pixelThreshold,
+  }: {
+    scrollHeight: number;
+    scrollTop: number;
+    clientHeight: number;
+    pixelThreshold: number;
+  }): boolean => {
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+    return (
+      distanceFromBottom <= pixelThreshold &&
+      distanceFromBottom >= -pixelThreshold
+    );
   };
 
   const fetchComments = async (start: number, limit: number) => {
