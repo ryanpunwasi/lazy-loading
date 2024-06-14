@@ -11,6 +11,7 @@ import {
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
 import { styled } from "@mui/material/styles";
+import { PAGE_SIZE } from "../config";
 
 type Props = {
   initialComments: Comment[];
@@ -48,7 +49,7 @@ const CommentList = ({ initialComments }: Props) => {
       setLoading(true);
       await new Promise(r => setTimeout(r, 500));
 
-      const fetchedComments = await fetchComments(start + 15, 15);
+      const fetchedComments = await fetchComments(start + PAGE_SIZE, PAGE_SIZE);
       setStart(prev => prev + 15);
       setComments([...comments, ...fetchedComments]);
       setLoading(false);

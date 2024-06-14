@@ -1,9 +1,10 @@
 import { Stack } from "@mui/material";
 import CommentList from "./components/CommentList";
+import { PAGE_SIZE } from "./config";
 
 export default async function Home() {
   const request = await fetch(
-    "https://jsonplaceholder.typicode.com/comments?_start=0&_limit=15"
+    `https://jsonplaceholder.typicode.com/comments?_start=0&_limit=${PAGE_SIZE}`
   );
 
   const comments = await request.json();
