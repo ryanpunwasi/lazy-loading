@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Alert, Stack } from "@mui/material";
 import CommentList from "./components/CommentList";
 import { PAGE_SIZE } from "./config";
 
@@ -24,6 +24,9 @@ export default async function Home() {
         sx={{ minHeight: "100%" }}
         padding={"1em"}
       >
+        <Alert style={{ marginBottom: "2em" }} severity="info">
+          Scroll to load more comments!
+        </Alert>
         <CommentList initialComments={comments} />
       </Stack>
     </main>
