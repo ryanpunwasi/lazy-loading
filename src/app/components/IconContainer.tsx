@@ -22,6 +22,11 @@ const IconContainer = () => {
 };
 
 const IconContainerStyled = styled("div")(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    left: 50,
+    right: 50,
+    justifyContent: "space-between",
+  },
   position: "absolute",
   top: 20,
   right: 100,
