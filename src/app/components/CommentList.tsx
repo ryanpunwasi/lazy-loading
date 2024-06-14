@@ -103,7 +103,7 @@ const CommentList = ({ initialComments }: Props) => {
 const CommentListItem = ({ comment }: { comment: Comment }) => {
   return (
     <div>
-      <Div>{comment.email}</Div>
+      <Email>{comment.email}</Email>
       <CommentBody>{comment.body}</CommentBody>
       <Stack direction={"row"} mt={"0.5em"} gap={"0.4em"}>
         <IconButton style={{ color: "white" }}>
@@ -120,7 +120,7 @@ const CommentListItem = ({ comment }: { comment: Comment }) => {
   );
 };
 
-const Div = styled("p")(({ theme }) => ({
+const Email = styled("p")(({ theme }) => ({
   ...theme.typography.subtitle2,
   color: "#fafafa",
   fontWeight: "bold",
