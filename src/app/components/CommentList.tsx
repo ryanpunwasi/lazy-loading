@@ -1,6 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+
+import { useFetchPermission } from "../hooks/useFetchPermission.hook";
+import { useLoading } from "../hooks/useLoading.hook";
+import { useScrollInfo } from "../hooks/useScrollInfo.hook";
+
 import {
   Stack,
   IconButton,
@@ -10,6 +15,7 @@ import {
 } from "@mui/material";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
+
 import { styled } from "@mui/material/styles";
 import { PAGE_SIZE, PIXEL_THRESHOLD } from "../config";
 
@@ -27,19 +33,17 @@ type Comment = {
 
 const CommentList = ({ initialComments }: Props) => {
   const [comments, setComments] = useState(initialComments);
-  const [loading, setLoading] = useState(false);
-  const [allowFetch, setAllowFetch] = useState(true);
   const [start, setStart] = useState(0);
+
+  const { allowFetch, setAllowFetch } = useFetchPermission(true);
+  const { loading, setLoading, loadingRef } = useLoading({
+    scrollBehaviour: "smooth",
+  });
+  const { scrollRef: ref, isAtBottom } = useScrollInfo();
+
   const renderedComments = comments.map(comment => (
     <CommentListItem comment={comment} key={comment.id}></CommentListItem>
   ));
-
-  const ref = useRef<HTMLDivElement | null>(null);
-  const loadingRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (loading) loadingRef.current?.scrollIntoView({ behavior: "instant" });
-  }, [loading]);
 
   const onScroll = async () => {
     if (!allowFetch) return;
@@ -73,24 +77,6 @@ const CommentList = ({ initialComments }: Props) => {
 
       setLoading(false);
     }
-  };
-
-  const isAtBottom = ({
-    scrollHeight,
-    scrollTop,
-    clientHeight,
-    pixelThreshold,
-  }: {
-    scrollHeight: number;
-    scrollTop: number;
-    clientHeight: number;
-    pixelThreshold: number;
-  }): boolean => {
-    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-    return (
-      distanceFromBottom <= pixelThreshold &&
-      distanceFromBottom >= -pixelThreshold
-    );
   };
 
   const fetchComments = async (start: number, limit: number) => {
