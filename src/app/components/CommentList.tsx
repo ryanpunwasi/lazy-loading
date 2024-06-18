@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useFetchPermission } from "../hooks/useFetchPermission.hook";
 import { useLoading } from "../hooks/useLoading.hook";
 import { useScrollInfo } from "../hooks/useScrollInfo.hook";
+import "./CommentList.module.css";
 
 import {
   Stack,
@@ -34,6 +36,7 @@ type Comment = {
 const CommentList = ({ initialComments }: Props) => {
   const [comments, setComments] = useState(initialComments);
   const [start, setStart] = useState(0);
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const { allowFetch, setAllowFetch } = useFetchPermission(true);
   const { loading, setLoading, loadingRef } = useLoading({
@@ -92,6 +95,7 @@ const CommentList = ({ initialComments }: Props) => {
       <Typography textAlign={"start"} mb={"0.25em"}>
         {comments.length} comments
       </Typography>
+
       <Stack
         onScroll={onScroll}
         ref={ref}
@@ -100,12 +104,12 @@ const CommentList = ({ initialComments }: Props) => {
         maxHeight={"70%"}
         overflow={"scroll"}
         gap={"1.5em"}
-        border={"1px solid #2C2C2C"}
+        border={prefersDarkMode ? `1px solid #2C2C2C` : "none"}
         borderRadius={"10px"}
         px={"1em"}
         pt={"1em"}
-        bgcolor={"101010"}
         id="commentsContainer"
+        bgcolor={prefersDarkMode ? "" : "#fff"}
       >
         {renderedComments}
         {loading && (
@@ -129,13 +133,13 @@ const CommentListItem = ({ comment }: { comment: Comment }) => {
       <Email>{comment.email}</Email>
       <CommentBody>{comment.body}</CommentBody>
       <Stack direction={"row"} mt={"0.5em"} gap={"0.4em"}>
-        <IconButton style={{ color: "white" }}>
+        <IconButton color="info">
           <ThumbUpAltOutlinedIcon />
         </IconButton>
-        <IconButton style={{ color: "white" }}>
+        <IconButton color="info">
           <ThumbDownAltOutlinedIcon />
         </IconButton>
-        <Button variant="text" style={{ color: "#38bdf8" }}>
+        <Button variant="text" color="info">
           Reply
         </Button>
       </Stack>
@@ -145,14 +149,12 @@ const CommentListItem = ({ comment }: { comment: Comment }) => {
 
 const Email = styled("p")(({ theme }) => ({
   ...theme.typography.subtitle2,
-  color: "#fafafa",
   fontWeight: "bold",
   marginBottom: "5px",
 }));
 
 const CommentBody = styled("p")(({ theme }) => ({
   ...theme.typography.body2,
-  color: "#d4d4d8",
 }));
 
 export default CommentList;
