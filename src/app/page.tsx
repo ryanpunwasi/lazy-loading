@@ -27,7 +27,7 @@ export default async function Home() {
         padding={"1em"}
       >
         <IconContainer />
-        <Alert style={{ marginBottom: "2em" }} severity="info">
+        <Alert sx={{ marginBottom: "2em" }} severity="info">
           Scroll to load more comments!
         </Alert>
         <CommentList initialComments={comments} />
