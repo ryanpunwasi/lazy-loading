@@ -6,7 +6,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useFetchPermission } from "../hooks/useFetchPermission.hook";
 import { useLoading } from "../hooks/useLoading.hook";
 import { useScrollInfo } from "../hooks/useScrollInfo.hook";
-import "./CommentList.module.css";
 
 import {
   Stack,
